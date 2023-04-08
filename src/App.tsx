@@ -1,26 +1,38 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { useState } from "react";
+import SearchBar from "./components/SearchBar";
+import SearchResults from "./components/SearchResults";
+import { searchPackages } from "./services/npmService";
+
+import logo from "./logo.svg";
+import "./App.css";
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+    const [searchResults, setSearchResults] = useState([]);
+    const [searchPerformed, setSearchPerformed] = useState(false);
+
+    const handleSearch = async (query: string) => {
+        setSearchPerformed(true);
+        try {
+            const results = await searchPackages(query, 10, 0);
+            setSearchResults(
+                results.objects.map((obj: any) => ({
+                    name: obj.package.name,
+                    author: obj.package.publisher.username,
+                    date: obj.package.date,
+                })),
+            );
+        } catch (error) {
+            console.error("Error fetching search results:", error);
+        }
+    };
+
+    return (
+        <div>
+            <SearchBar onSearch={handleSearch} />
+            {searchPerformed && <SearchResults results={searchResults} />}
+        </div>
+    );
 }
 
 export default App;
+
