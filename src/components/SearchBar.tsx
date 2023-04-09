@@ -1,24 +1,23 @@
-import React, { useState } from "react";
+import React, { useRef } from "react";
 
 interface SearchBarProps {
     onSearch: (query: string) => void;
 }
 
 const SearchBar: React.FC<SearchBarProps> = ({ onSearch }) => {
-    const [searchQuery, setSearchQuery] = useState("");
+    const searchQuery = useRef<HTMLInputElement>(null);
 
-    const handleSearch = (e: React.FormEvent) => {
+    const handleSearch = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        onSearch(searchQuery);
+
+        if (searchQuery.current) {
+            onSearch(searchQuery.current.value);
+        }
     };
 
     return (
         <form onSubmit={handleSearch}>
-            <input
-                type="text"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-            />
+            <input type="text" ref={searchQuery} />
             <button type="submit">Search</button>
         </form>
     );
