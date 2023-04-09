@@ -11,30 +11,54 @@ const Pagination: React.FC<PaginationProps> = ({
     totalPages,
     onPageChange,
 }) => {
-    const handlePageClick = (pageNumber: number) => {
-        onPageChange(pageNumber);
+    const maxVisiblePages = 10;
+    const startPage =
+        currentPage > Math.ceil(maxVisiblePages / 2)
+            ? Math.max(
+                  Math.min(
+                      currentPage - Math.floor(maxVisiblePages / 2),
+                      totalPages - maxVisiblePages + 1,
+                  ),
+                  1,
+              )
+            : 1;
+    const endPage = Math.min(startPage + maxVisiblePages - 1, totalPages);
+
+    const handlePrevious = () => {
+        if (currentPage > 1) {
+            onPageChange(currentPage - 1);
+        }
     };
 
-    const pageNumbers = Array.from({ length: totalPages }, (_, i) => i + 1);
+    const handleNext = () => {
+        if (currentPage < totalPages) {
+            onPageChange(currentPage + 1);
+        }
+    };
+
+    const pages = Array.from(
+        { length: endPage - startPage + 1 },
+        (_, i) => startPage + i,
+    );
 
     return (
         <nav>
             <ul className="pagination">
-                {pageNumbers.map((number) => (
+                <li onClick={handlePrevious}>&laquo;</li>
+                {pages.map((page) => (
                     <li
-                        key={number}
-                        className={`page-item ${
-                            currentPage === number ? "active" : ""
-                        }`}
+                        key={page}
+                        onClick={() => onPageChange(page)}
+                        style={{
+                            cursor: "pointer",
+                            fontWeight:
+                                currentPage === page ? "bold" : "normal",
+                        }}
                     >
-                        <button
-                            className="page-link"
-                            onClick={() => handlePageClick(number)}
-                        >
-                            {number}
-                        </button>
+                        {page}
                     </li>
                 ))}
+                <li onClick={handleNext}>&raquo;</li>
             </ul>
         </nav>
     );

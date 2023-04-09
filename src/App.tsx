@@ -50,6 +50,7 @@ function App() {
 
     const handleSearch = async (query: string) => {
         setSearchQuery(query);
+        setCurrentPage(1);
         setSearchPerformed(true);
     };
 
@@ -60,17 +61,26 @@ function App() {
     return (
         <div>
             <SearchBar onSearch={handleSearch} />
-            {searchPerformed &&
-                (loading ? (
-                    <Loading />
-                ) : (
-                    <SearchResults results={searchResults} />
-                ))}
-            <Pagination
-                currentPage={currentPage}
-                totalPages={Math.ceil(totalItemsCount / itemsCountPerPage)}
-                onPageChange={handlePageChange}
-            />
+            {searchPerformed && (
+                <>
+                    {loading ? (
+                        <Loading />
+                    ) : (
+                        <>
+                            <SearchResults results={searchResults} />
+                            {totalItemsCount > 0 ? (
+                                <Pagination
+                                    currentPage={currentPage}
+                                    totalPages={Math.ceil(
+                                        totalItemsCount / itemsCountPerPage,
+                                    )}
+                                    onPageChange={handlePageChange}
+                                />
+                            ) : null}
+                        </>
+                    )}
+                </>
+            )}
         </div>
     );
 }
