@@ -2,11 +2,13 @@ import React, { useEffect, useState } from "react";
 import SearchBar from "./components/SearchBar";
 import SearchResults from "./components/SearchResults";
 import { searchPackages } from "./services/npmService";
-import Pagination from "./components/Pagination";
+// import Pagination from "./components/Pagination";
+import Loading from "./components/Loading";
+import { SearchBarContainer } from "./assets/AppStyles";
+import { Container, Pagination } from "@mui/material";
 
 import logo from "./logo.svg";
 import "./App.css";
-import Loading from "./components/Loading";
 
 function App() {
     const [searchQuery, setSearchQuery] = useState("");
@@ -25,11 +27,7 @@ function App() {
         const fetchSearchResult = async () => {
             setLoading(true);
             try {
-                const results = await searchPackages(
-                    searchQuery,
-                    itemsCountPerPage,
-                    (currentPage - 1) * itemsCountPerPage,
-                );
+                const results = await searchPackages(searchQuery, itemsCountPerPage, (currentPage - 1) * itemsCountPerPage);
                 setSearchResults(
                     results.objects.map((obj: any) => ({
                         name: obj.package.name,
@@ -48,40 +46,51 @@ function App() {
         fetchSearchResult();
     }, [searchPerformed, searchQuery, currentPage]);
 
-    const handleSearch = async (query: string) => {
+    const handleSearch = async (query: string, pageNumber: number = 1) => {
         setSearchQuery(query);
-        setCurrentPage(1);
+        setCurrentPage(pageNumber);
         setSearchPerformed(true);
     };
 
-    const handlePageChange = (pageNumber: number) => {
-        setCurrentPage(pageNumber);
+    const handlePageChange = (event: React.ChangeEvent<unknown>, newPage: number) => {
+        setCurrentPage(newPage);
+        handleSearch(searchQuery, newPage);
     };
 
     return (
-        <div>
-            <SearchBar onSearch={handleSearch} />
-            {searchPerformed && (
-                <>
-                    {loading ? (
-                        <Loading />
-                    ) : (
-                        <>
-                            <SearchResults results={searchResults} />
-                            {totalItemsCount > 0 ? (
-                                <Pagination
-                                    currentPage={currentPage}
-                                    totalPages={Math.ceil(
-                                        totalItemsCount / itemsCountPerPage,
-                                    )}
-                                    onPageChange={handlePageChange}
-                                />
-                            ) : null}
-                        </>
-                    )}
-                </>
-            )}
-        </div>
+        <>
+            <SearchBarContainer searchPerformed={searchPerformed}>
+                <SearchBar onSearch={handleSearch} />
+            </SearchBarContainer>
+            <Container maxWidth="md" sx={{ marginTop: searchPerformed ? 16 : 0 }}>
+                {searchPerformed && (
+                    <>
+                        {loading ? (
+                            <Loading />
+                        ) : (
+                            <>
+                                <SearchResults results={searchResults} />
+                                {totalItemsCount > 0 ? (
+                                    <Pagination
+                                        count={Math.ceil(totalItemsCount / itemsCountPerPage)}
+                                        page={currentPage}
+                                        onChange={handlePageChange}
+                                        shape="rounded"
+                                        color="primary"
+                                        sx={{
+                                            marginTop: 4,
+                                            marginBottom: 4,
+                                            justifyContent: "center",
+                                            display: "flex",
+                                        }}
+                                    />
+                                ) : null}
+                            </>
+                        )}
+                    </>
+                )}
+            </Container>
+        </>
     );
 }
 

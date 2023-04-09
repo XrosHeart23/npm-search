@@ -6,21 +6,11 @@ interface PaginationProps {
     onPageChange: (pageNumber: number) => void;
 }
 
-const Pagination: React.FC<PaginationProps> = ({
-    currentPage,
-    totalPages,
-    onPageChange,
-}) => {
+const Pagination: React.FC<PaginationProps> = ({ currentPage, totalPages, onPageChange }) => {
     const maxVisiblePages = 10;
     const startPage =
         currentPage > Math.ceil(maxVisiblePages / 2)
-            ? Math.max(
-                  Math.min(
-                      currentPage - Math.floor(maxVisiblePages / 2),
-                      totalPages - maxVisiblePages + 1,
-                  ),
-                  1,
-              )
+            ? Math.max(Math.min(currentPage - Math.floor(maxVisiblePages / 2), totalPages - maxVisiblePages + 1), 1)
             : 1;
     const endPage = Math.min(startPage + maxVisiblePages - 1, totalPages);
 
@@ -36,10 +26,7 @@ const Pagination: React.FC<PaginationProps> = ({
         }
     };
 
-    const pages = Array.from(
-        { length: endPage - startPage + 1 },
-        (_, i) => startPage + i,
-    );
+    const pages = Array.from({ length: endPage - startPage + 1 }, (_, i) => startPage + i);
 
     return (
         <nav>
@@ -51,8 +38,7 @@ const Pagination: React.FC<PaginationProps> = ({
                         onClick={() => onPageChange(page)}
                         style={{
                             cursor: "pointer",
-                            fontWeight:
-                                currentPage === page ? "bold" : "normal",
+                            fontWeight: currentPage === page ? "bold" : "normal",
                         }}
                     >
                         {page}

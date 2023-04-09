@@ -1,3 +1,4 @@
+import { Box, Grid, Paper, Typography } from "@mui/material";
 import React from "react";
 
 interface SearchResult {
@@ -20,15 +21,19 @@ const SearchResults: React.FC<SearchResultsProps> = ({ results }) => {
     }
 
     return (
-        <div>
+        <Grid container spacing={2} justifyContent="center" alignItems="stretch">
             {results.map((result, index) => (
-                <div key={index}>
-                    <h3>{result.name}</h3>
-                    <p>Author: {result.author}</p>
-                    <p>Last updated: {result.date}</p>
-                </div>
+                <Grid key={index} item xs={4} sm={6} md={4} lg={3}>
+                    <Box display="flex" flexDirection="column">
+                        <Paper sx={{ padding: 2, flexGrow: 1 }}>
+                            <Typography variant="h6">{result.name}</Typography>
+                            <Typography>{result.author}</Typography>
+                            <Typography>{result.date}</Typography>
+                        </Paper>
+                    </Box>
+                </Grid>
             ))}
-        </div>
+        </Grid>
     );
 };
 

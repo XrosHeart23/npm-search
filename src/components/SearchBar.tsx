@@ -1,3 +1,5 @@
+import { Search } from "@mui/icons-material";
+import { IconButton, InputAdornment, TextField } from "@mui/material";
 import React, { useRef } from "react";
 
 interface SearchBarProps {
@@ -17,8 +19,26 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSearch }) => {
 
     return (
         <form onSubmit={handleSearch}>
-            <input type="text" ref={searchQuery} />
-            <button type="submit">Search</button>
+            <TextField
+                inputRef={searchQuery}
+                variant="outlined"
+                fullWidth
+                InputProps={{
+                    endAdornment: (
+                        <InputAdornment position="end">
+                            <IconButton type="submit" edge="end">
+                                <Search />
+                            </IconButton>
+                        </InputAdornment>
+                    ),
+                }}
+                sx={{
+                    "& .MuiOutlinedInput-root": {
+                        borderRadius: "50px",
+                        paddingLeft: "10px",
+                    },
+                }}
+            />
         </form>
     );
 };
