@@ -1,4 +1,4 @@
-import { Box, Grid, Paper, Typography } from "@mui/material";
+import { Box, Container, Grid, Paper, Typography } from "@mui/material";
 import React from "react";
 
 interface SearchResult {
@@ -14,9 +14,15 @@ interface SearchResultsProps {
 const SearchResults: React.FC<SearchResultsProps> = ({ results }) => {
     if (results.length === 0) {
         return (
-            <div>
+            <Container
+                style={{
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                }}
+            >
                 <p>No result found</p>
-            </div>
+            </Container>
         );
     }
 
