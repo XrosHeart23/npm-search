@@ -22,6 +22,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSearch }) => {
             <TextField
                 inputRef={searchQuery}
                 variant="outlined"
+                label="Search"
                 fullWidth
                 InputProps={{
                     endAdornment: (
